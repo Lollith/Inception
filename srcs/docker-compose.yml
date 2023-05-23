@@ -1,1 +1,10 @@
 version: ‘3’
+
+services:
+  nginx:
+    container_name: nginx
+    volumes: 
+      - wordpress: /var/www/html  
+      # - wordpress: /var/www/wordpress
+    networks:
+      - inception
