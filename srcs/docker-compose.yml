@@ -6,9 +6,9 @@ services:
     volumes: 
       - wordpress: /var/www/html  
       # - wordpress: /var/www/wordpress
-    networks:
-      - inception
+    #networks:
+     # - inception
 
-networks:
-  inception:
-  driver: bridge
+#networks:
+ # inception:
+  #driver: bridge
