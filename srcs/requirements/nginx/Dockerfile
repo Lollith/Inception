@@ -2,8 +2,8 @@ FROM 	debian:buster
 
 #general
 RUN		apt update && apt upgrade -y 
-RUN	    apt install vim -y
-RUN		apt install curl -y 
+# RUN	    apt install vim -y
+# RUN		apt install curl -y 
 
 
 #securite

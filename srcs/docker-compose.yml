@@ -1,13 +1,24 @@
-version: ‘3’
+version: '3'
 
 services:
   nginx:
     container_name: nginx
-    volumes: 
-      - wordpress: /var/www/html  
+    
+    build: 
+      context: requirements/nginx
+
+    restart: on-failure
+    ports:
+      - "443:443"
+  
+    # volumes: 
+      # - wordpress: /var/www/html  
       # - wordpress: /var/www/wordpress
+    # depends_on:
+      # - wordpress
     #networks:
      # - inception
+    #env_file: .env
 
 #networks:
  # inception:
