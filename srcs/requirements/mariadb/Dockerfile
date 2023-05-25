@@ -8,5 +8,11 @@ RUN		apt update && apt upgrade -y
 #mariadb
 RUN 	apt install mariadb-server -y
 COPY	conf/50-server.cnf /etc/mysql/mariadb.conf.d/50-server.cnf
-# CMD 	service mysql start;
 
+COPY	myscriptsql.sql /docker-entrypoint-initdb.d/ 
+# => volumes
+
+# CMD 	service mysql start;
+# CMD ["mysqld"]
+
+EXPOSE 3306
