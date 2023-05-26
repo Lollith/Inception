@@ -14,8 +14,8 @@ services:
       # - wordpress: /var/www/wordpress
     # depends_on:
       # - wordpress
-    #networks:
-     # - inception
+    networks:
+     - inception
     #env_file: .env
 
   mariadb:
@@ -29,11 +29,11 @@ services:
     restart: unless-stopped
     expose:
       - "3306"
-    #networks:
-     # - inception
+    networks:
+     - inception
     #env_file: .env
 
 
-#networks:
- # inception:
-  #driver: bridge
+networks:
+  inception:
+    driver: bridge
