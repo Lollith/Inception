@@ -3,10 +3,8 @@ version: '3'
 services:
   nginx:
     container_name: nginx
-    
     build: 
       context: requirements/nginx
-
     restart: on-failure
     ports:
       - "443:443"
@@ -19,6 +17,22 @@ services:
     #networks:
      # - inception
     #env_file: .env
+
+  mariadb:
+    container_name: mariadb
+    build: requirements/mariadb 
+    # volumes:
+    #   - type: 'bind'
+    #     # source:  /home/agouet/data 
+    #     source: requirements/mariadb/tools
+    #     target: /var/lib/mysql
+    restart: unless-stopped
+    expose:
+      - "3306"
+    #networks:
+     # - inception
+    #env_file: .env
+
 
 #networks:
  # inception:
