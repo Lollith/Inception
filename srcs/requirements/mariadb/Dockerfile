@@ -11,4 +11,4 @@ COPY		tools/init_database.sh init_database.sh
 RUN 		chmod 755 init_database.sh
 ENTRYPOINT 	["/init_database.sh"]
 
-# EXPOSE 3306 // mis ds compose
+# EXPOSE 3306 // mis ds compose // preferer ici?? 
