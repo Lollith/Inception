@@ -1,0 +1,198 @@
+#include <iostream>
+#include <string>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+class Cell {
+    public:
+        int _index, _cellType, _resources, _myAnts, _oppAnts;
+        vector<int> _neighbors;
+
+        Cell(int index, int cellType, int resources, vector<int> neighbors, int myAnts = 0, int oppAnts = 0) {
+            _index = index;
+            _cellType = cellType;
+            _resources = resources;
+            _neighbors = neighbors;
+            _myAnts = myAnts;
+            _oppAnts = oppAnts;
+        }
+};
+
+// cherche l index de ma base
+// pos_my_base(int number_of_cells)
+// for (int i = 0; i < number_of_cells; i++) {
+
+// }
+
+int main()
+{
+    vector<Cell> cells;
+    vector<int> myBases, oppBases;
+
+    int number_of_cells; // amount of hexagonal cells in this map
+    cin >> number_of_cells; cin.ignore();
+    for (int i = 0; i < number_of_cells; i++) {
+        int type; // 0 for empty, 1 for eggs, 2 for crystal
+        int initial_resources; // the initial amount of eggs/crystals on this cell
+        int neigh_0; // the index of the neighbouring cell for each direction
+        int neigh_1;
+        int neigh_2;
+        int neigh_3;
+        int neigh_4;
+        int neigh_5;
+        cin >> type >> initial_resources >> neigh_0 >> neigh_1 >> neigh_2 >> neigh_3 >> neigh_4 >> neigh_5; cin.ignore();
+    
+        Cell cell(i, type, initial_resources, {neigh_0, neigh_1, neigh_2, neigh_3, neigh_4, neigh_5}, 0, 0);
+        cells.push_back(cell);
+    }
+
+    int number_of_bases;
+    cin >> number_of_bases; cin.ignore();
+    for (int i = 0; i < number_of_bases; i++) {
+        int my_base_index;
+        cin >> my_base_index; cin.ignore();
+        myBases.push_back(my_base_index);
+    }
+    for (int i = 0; i < number_of_bases; i++) {
+        int opp_base_index;
+        cin >> opp_base_index; cin.ignore();
+        oppBases.push_back(opp_base_index);
+    }
+
+    // game loop
+    while (1) {
+        string actions = "WAIT";
+        string best_way = "WAIT";
+        vector<string> compar_way;
+        int flag_many_ways = 0;
+
+        //-------------------------------------------- maj des donnees----------------------------------------------------------
+        for (int i = 0; i < number_of_cells; i++) {
+            int resources; // the current amount of eggs/crystals on this cell
+            int my_ants; // the amount of your ants on this cell
+            int opp_ants; // the amount of opponent ants on this cell
+            cin >> resources >> my_ants >> opp_ants; cin.ignore();
+
+            cells[i]._resources = resources;
+            cells[i]._myAnts = my_ants;
+            cells[i]._oppAnts = opp_ants;
+        }
+        string base = to_string(myBases[0]);
+        //----------------------------------------------type1 -----------------------------------------------------------
+        // look for plus grosse fourmillere
+
+        Cell ant_cell(0,0,0,{0,0,0,0,0,0},0,0);
+        Cell ant_cell2(0,0,0,{0,0,0,0,0,0},0,0);
+        for (int i = 0; i < number_of_cells; i++) 
+        {
+            if (cells[i]._cellType == 1)
+            {   
+                if(cells[i]._resources == ant_cell._resources)
+                {
+                        flag_many_ways = 1;
+                        string ant_cell_str = to_string(ant_cell._index);//recup la 1ere valeur 
+                         best_way =  "LINE " + base + " " + ant_cell_str + " 3;";
+                    // cerr<<"best way si = " <<best_way<< endl;
+                        compar_way.push_back(best_way);
+                        ant_cell = cells[i];
+                        ant_cell_str = to_string(ant_cell._index);
+                    // cerr<<"best way si = " <<best_way<< endl;
+                        best_way =  "LINE " + base + " " + ant_cell_str + " 3;";
+                        compar_way.push_back(best_way);
+                    // cerr<<"best way si = " <<best_way<< endl;
+                }
+            
+                else if(cells[i]._resources > ant_cell._resources)
+                {
+                    ant_cell = cells[i];
+                    string ant_cell_str = to_string(ant_cell._index);
+                    actions =  "LINE " + base + " " + ant_cell_str + " 3;";
+                    // cerr<< "nid1 "<<actions << endl;
+                }
+             
+                else if(cells[i]._resources > ant_cell2._resources)
+                {
+                    ant_cell2 = cells[i];
+                    string ant_cell_str2 = to_string(ant_cell2._index);
+                    if(ant_cell2._resources != 0)//si jai une 2eme source
+                        actions +=  "LINE " + base + " " + ant_cell_str2 + " 1;";
+                // cerr<< "nid2 "<<actions << endl;
+                }
+            } 
+            
+        }
+        if (flag_many_ways == 1)
+        {
+            // for (int i = 0; i < compar_way.size()-1; i++) 
+            {
+                if(compar_way[0] >= compar_way[1])
+                     actions += compar_way[1];
+                else                
+                     actions += compar_way[0];
+
+            }
+                cerr<< "best way "<<actions << endl;
+        }
+        // string ant_cell_str = to_string(ant_cell._index);
+        // string ant_cell_str2 = to_string(ant_cell2._index);
+
+        cerr<< "action "<<actions << endl;
+        //------------------------------------------------------ressources---------------------------------------------------------
+        
+        //look for the cell with max ressource
+        Cell big_cell(0,0,0,{0,0,0,0,0,0},0,0);
+        Cell big_cell_2(0,0,0,{0,0,0,0,0,0},0,0);
+        Cell big_cell_3(0,0,0,{0,0,0,0,0,0},0,0);
+        Cell big_cell_4(0,0,0,{0,0,0,0,0,0},0,0);
+        for (int i = 0; i < number_of_cells; i++) 
+        {
+            if(cells[i]._resources >= big_cell._resources)
+                big_cell = cells[i];
+            else if(cells[i]._resources >= big_cell_2._resources)
+                big_cell_2 = cells[i];
+            else if(cells[i]._resources >= big_cell_3._resources)
+                big_cell_3 = cells[i];
+            else if(cells[i]._resources >= big_cell_4._resources)
+                big_cell_4 = cells[i];
+        }
+        string big_cell_str = to_string(big_cell._index);
+        string big_cell_str_2 = to_string(big_cell_2._index);
+        string big_cell_str_3 = to_string(big_cell_3._index);
+        string big_cell_str_4 = to_string(big_cell_4._index);
+        //------------------------------------------------------ACTIONS--------------------------------------------------
+        //ant
+        // if(flag_many_ways == 0)
+            // actions =  "LINE " + base + " " + ant_cell_str + " 3;";
+        // if(ant_cell2._resources != 0)//si jai une 2eme source
+            // actions =  "LINE " + base + " " + ant_cell_str2 + " 1;";
+
+
+        // cristaux
+        actions +=  "LINE " + base + " " + big_cell_str + " 3;";
+        if(big_cell_2._resources != 0)//si jai une 2eme source
+            actions +=  "LINE " + base + " " + big_cell_str_2 + " 2;";
+        if(big_cell_3._resources != 0)//si jai une 3eme source
+            actions +=  "LINE " + base + " " + big_cell_str_3 + " 1;";
+        if(big_cell_4._resources != 0)//si jai une 4eme source
+            actions +=  "LINE " + base + " " + big_cell_str_4 + " 1;";
+        // actions = "BEACON " + big_cell_str + " 2";
+      //--------------------------------------------------------display---------------------------------------------------- 
+        if (actions.length() == 0){
+            cout << "WAIT" << endl;
+        } else {
+            actions += ';';
+            cout << actions << endl;
+        }
+
+    }
+}
+        // WAIT | LINE <sourceIdx> <targetIdx> <strength> | BEACON <cellIdx> <strength> | MESSAGE <text>
+        // To debug: cerr << "Debug messages..." << endl;i
+
+
+        // string next_cell = to_string(myBases[0]+1);
+         // LINE index1 index2 strength
+        // actions =  "LINE " + base + " " + next_cell + " 1";
+            // cout << "cell ressources : "<< cells[i].resources<< endl
