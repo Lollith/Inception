@@ -67,6 +67,8 @@ int main()
         string best_way = "WAIT";
         vector<string> compar_way;
         int flag_many_ways = 0;
+        int flag_many_ways_cristaux = 0;
+        
 
         //-------------------------------------------- maj des donnees----------------------------------------------------------
         for (int i = 0; i < number_of_cells; i++) {
@@ -80,7 +82,7 @@ int main()
             cells[i]._oppAnts = opp_ants;
         }
         string base = to_string(myBases[0]);
-        //----------------------------------------------type1 -----------------------------------------------------------
+        //----------------------------------------------fourmillere -----------------------------------------------------------
         // look for plus grosse fourmillere
 
         Cell ant_cell(0,0,0,{0,0,0,0,0,0},0,0);
@@ -109,7 +111,7 @@ int main()
                     ant_cell = cells[i];
                     string ant_cell_str = to_string(ant_cell._index);
                     actions =  "LINE " + base + " " + ant_cell_str + " 3;";
-                    // cerr<< "nid1 "<<actions << endl;
+                    cerr<< "nid1 "<<actions << endl;
                 }
              
                 else if(cells[i]._resources > ant_cell2._resources)
@@ -118,7 +120,7 @@ int main()
                     string ant_cell_str2 = to_string(ant_cell2._index);
                     if(ant_cell2._resources != 0)//si jai une 2eme source
                         actions +=  "LINE " + base + " " + ant_cell_str2 + " 1;";
-                // cerr<< "nid2 "<<actions << endl;
+                    cerr<< "nid2 "<<actions << endl;
                 }
             } 
             
@@ -127,18 +129,18 @@ int main()
         {
             // for (int i = 0; i < compar_way.size()-1; i++) 
             {
-                if(compar_way[0] >= compar_way[1])
+                if(compar_way[0].size()  >= compar_way[1].size())
                      actions += compar_way[1];
                 else                
                      actions += compar_way[0];
 
             }
-                cerr<< "best way "<<actions << endl;
+                cerr<< "best way nid de meme valeur: "<<actions << endl;
         }
         // string ant_cell_str = to_string(ant_cell._index);
         // string ant_cell_str2 = to_string(ant_cell2._index);
 
-        cerr<< "action "<<actions << endl;
+        // cerr<< "action "<<actions << endl;
         //------------------------------------------------------ressources---------------------------------------------------------
         
         //look for the cell with max ressource
@@ -148,19 +150,64 @@ int main()
         Cell big_cell_4(0,0,0,{0,0,0,0,0,0},0,0);
         for (int i = 0; i < number_of_cells; i++) 
         {
-            if(cells[i]._resources >= big_cell._resources)
-                big_cell = cells[i];
-            else if(cells[i]._resources >= big_cell_2._resources)
-                big_cell_2 = cells[i];
-            else if(cells[i]._resources >= big_cell_3._resources)
-                big_cell_3 = cells[i];
-            else if(cells[i]._resources >= big_cell_4._resources)
-                big_cell_4 = cells[i];
+            if (cells[i]._cellType == 2)
+            {
+                if(cells[i]._resources == big_cell._resources)
+                {
+                        flag_many_ways_cristaux = 1;
+                        string big_cell_str = to_string(big_cell._index);//recup la 1ere valeur 
+                         best_way =  "LINE " + base + " " + big_cell_str + " 4;";
+                    // cerr<<"best way si = " <<best_way<< endl;
+                        compar_way.push_back(best_way);
+                        big_cell = cells[i];
+                        big_cell_str = to_string(big_cell._index);
+                    // cerr<<"best way si = " <<best_way<< endl;
+                        best_way =  "LINE " + base + " " + big_cell_str + " 4;";
+                        compar_way.push_back(best_way);
+                    // cerr<<"best way si = " <<best_way<< endl;
+                }
+                else if(cells[i]._resources > big_cell._resources)
+                { 
+                    big_cell = cells[i];
+                    string big_cell_str = to_string(big_cell._index);
+                    actions =  "LINE " + base + " " + big_cell_str + " 4;";
+                    cerr<< "cristaux1 "<<actions << endl;
+                }
+                else if(cells[i]._resources >= big_cell_2._resources)
+                {
+                    big_cell_2 = cells[i];
+                    string big_cell_str2 = to_string(big_cell_2._index);
+                    if(big_cell_2._resources != 0)//si jai une 2eme source
+                        actions +=  "LINE " + base + " " + big_cell_str2 + " 1;";
+                    cerr<< "cristaux2 "<<actions << endl;
+                }
+
+            //     else if(cells[i]._resources >= big_cell_3._resources)
+            //         big_cell_3 = cells[i];
+            //     else if(cells[i]._resources >= big_cell_4._resources)
+            //         big_cell_4 = cells[i];
+            }
         }
-        string big_cell_str = to_string(big_cell._index);
-        string big_cell_str_2 = to_string(big_cell_2._index);
-        string big_cell_str_3 = to_string(big_cell_3._index);
-        string big_cell_str_4 = to_string(big_cell_4._index);
+
+         if (flag_many_ways_cristaux == 1)
+        {
+            // for (int i = 0; i < compar_way.size()-1; i++) 
+            {
+                if(compar_way[0].size()>= compar_way[1].size())
+                     actions += compar_way[1];
+                else                
+                     actions += compar_way[0];
+
+            }
+                // cerr<< "best way "<<actions << endl;
+        }
+
+    //    }
+
+        // string big_cell_str = to_string(big_cell._index);
+        // string big_cell_str_2 = to_string(big_cell_2._index);
+        // string big_cell_str_3 = to_string(big_cell_3._index);
+        // string big_cell_str_4 = to_string(big_cell_4._index);
         //------------------------------------------------------ACTIONS--------------------------------------------------
         //ant
         // if(flag_many_ways == 0)
@@ -170,24 +217,30 @@ int main()
 
 
         // cristaux
-        actions +=  "LINE " + base + " " + big_cell_str + " 3;";
-        if(big_cell_2._resources != 0)//si jai une 2eme source
-            actions +=  "LINE " + base + " " + big_cell_str_2 + " 2;";
-        if(big_cell_3._resources != 0)//si jai une 3eme source
-            actions +=  "LINE " + base + " " + big_cell_str_3 + " 1;";
-        if(big_cell_4._resources != 0)//si jai une 4eme source
-            actions +=  "LINE " + base + " " + big_cell_str_4 + " 1;";
+        // if(flag_many_ways_cristaux == 0)
+        //     actions +=  "LINE " + base + " " + big_cell_str + " 3;";
+        // if(big_cell_2._resources != 0)//si jai une 2eme source
+        //     actions +=  "LINE " + base + " " + big_cell_str_2 + " 2;";
+        // if(big_cell_3._resources != 0)//si jai une 3eme source
+        //     actions +=  "LINE " + base + " " + big_cell_str_3 + " 1;";
+        // if(big_cell_4._resources != 0)//si jai une 4eme source
+        //     actions +=  "LINE " + base + " " + big_cell_str_4 + " 1;";
         // actions = "BEACON " + big_cell_str + " 2";
-      //--------------------------------------------------------display---------------------------------------------------- 
-        if (actions.length() == 0){
-            cout << "WAIT" << endl;
-        } else {
-            actions += ';';
-            cout << actions << endl;
-        }
+      
 
-    }
-}
+      //--------------------------------------------------------display---------------------------------------------------- 
+        // while (big_cell._resources != 0)
+    //    {
+            if (actions.length() == 0){
+                cout << "WAIT" << endl;
+            } else {
+                actions += ';';
+                cout << actions << endl;
+            }
+        // }
+
+    }//loop
+}//main
         // WAIT | LINE <sourceIdx> <targetIdx> <strength> | BEACON <cellIdx> <strength> | MESSAGE <text>
         // To debug: cerr << "Debug messages..." << endl;i
 
