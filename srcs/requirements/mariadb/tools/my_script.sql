@@ -1,2 +1,2 @@
--- service mysql start;
+service mysql start;
 CREATE DATABASE madata;

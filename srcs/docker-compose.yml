@@ -24,26 +24,26 @@ services:
      - inception
     #env_file: .env
 
-  # mariadb:
-  #   container_name: mariadb
-  #   build: requirements/mariadb 
+  mariadb:
+    container_name: mariadb
+    build: requirements/mariadb 
   #   # volumes:
   #   #   - type: 'bind'
   #   #     # source:  /home/agouet/data 
   #   #     source: requirements/mariadb/tools
   #   #     target: /var/lib/mysql
-  #   restart: unless-stopped
-  #   expose:
-  #     - "3306"
-  #   networks:
-  #    - inception
+    restart: unless-stopped
+    expose:
+      - "3306"
+    networks:
+     - inception
   #   #env_file: .env
 
   wordpress:
     container_name: wordpress
     build: requirements/wordpress
-    # depends_on:
-    #   - mariadb
+    depends_on:
+      - mariadb
       #env_file: .env
     # volumes:
     #   - type: bind
