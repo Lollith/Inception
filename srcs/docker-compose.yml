@@ -7,8 +7,7 @@ services:
       context: requirements/nginx
     restart: on-failure
     ports:
-      - "443:443"
-  
+      - "443:443" 
     # volumes: 
       # - wordpress: /var/www/wordpress
     # volumes:
@@ -22,7 +21,7 @@ services:
       - wordpress
     networks:
      - inception
-    #env_file: .env
+    env_file: .env
 
   mariadb:
     container_name: mariadb
@@ -37,14 +36,14 @@ services:
       - "3306"
     networks:
      - inception
-  #   #env_file: .env
+    env_file: .env
 
   wordpress:
     container_name: wordpress
     build: requirements/wordpress
     depends_on:
       - mariadb
-      #env_file: .env
+    env_file: .env
     # volumes:
     #   - type: bind
     #     # source: /user/agouet42/data/wordpress a corriger
