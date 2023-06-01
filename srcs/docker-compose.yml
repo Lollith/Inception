@@ -10,11 +10,11 @@ services:
       - "443:443" 
     # volumes: 
       # - wordpress: /var/www/wordpress
-    # volumes:
-    #   - type: bind
-    #     # source: /user/agouet42/data/wordpress a corriger
-    #     source: requirements/wordpress/tools
-    #     target: /var/www/wordpress
+    volumes:
+      - type: bind
+        source:  /home/agouet42/data/wordpress
+        # source: requirements/wordpress/tools/wordpress
+        target: /var/www/wordpress
 #??
 
     depends_on:
@@ -23,32 +23,33 @@ services:
      - inception
     env_file: .env
 
-  mariadb:
-    container_name: mariadb
-    build: requirements/mariadb 
-  #   # volumes:
-  #   #   - type: 'bind'
-  #   #     # source:  /home/agouet/data 
-  #   #     source: requirements/mariadb/tools
-  #   #     target: /var/lib/mysql
-    restart: unless-stopped
-    expose:
-      - "3306"
-    networks:
-     - inception
-    env_file: .env
+  # mariadb:
+  #   container_name: mariadb
+  #   build: requirements/mariadb 
+  #   volumes:
+  #     - type: bind
+  #       # source:  /home/agouet/data 
+  #       source: requirements/mariadb/tools
+        # source:  /home/agouet42/data/wordpress
+  #       target: /var/lib/mysql
+  #   restart: unless-stopped
+  #   expose:
+  #     - "3306"
+  #   networks:
+  #    - inception
+  #   env_file: .env
 
   wordpress:
     container_name: wordpress
     build: requirements/wordpress
-    depends_on:
-      - mariadb
+    # depends_on:
+    #   - mariadb
     env_file: .env
-    # volumes:
-    #   - type: bind
-    #     # source: /user/agouet42/data/wordpress a corriger
-    #     source: requirements/wordpress/tools
-    #     target: /var/www/wordpress
+    volumes:
+      - type: bind
+        source:  /home/agouet42/data/wordpress
+        # source: requirements/wordpress/tools
+        target: /var/www/wordpress
     networks:
       - inception
     restart: on-failure
