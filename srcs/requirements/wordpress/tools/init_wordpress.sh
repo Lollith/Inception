@@ -1,6 +1,8 @@
 #!/bin/bash
 
 # // condition si wp-config.php nexiste pas alors lance la commade wp config create
+
+if [ ! -f /var/www/wordpress/wp-config.php ]; then
 sleep 10
 
 wp config create	--allow-root \
@@ -10,5 +12,16 @@ wp config create	--allow-root \
 					--dbhost=mariadb:3306 \
 					--path='/var/www/wordpress'
 
+# wp core install --allow-rrot \
+# 				--path='/var/www/wordpress'
+
+else
+	echo "wp_config php DONE"
+fi
+
+if [ ! -d /run/php ]; then
+	mkdir -p /run/php #creer ds un path donner le dossier
+fi
+
 # run php-fpm:
-# exec php-fpm7.3 -F
+exec php-fpm7.3 -F

@@ -9,9 +9,8 @@ services:
     ports:
       - "443:443" 
     volumes:
-      - type: bind
-        source:  /home/agouet42/data/wordpress
-        target: /var/www/wordpress
+      # - /home/agouet42/data/wordpress:/var/www/wordpress #attention pas d espaces, bind mount
+        - Wordpress:/var/www/wordpress
     depends_on:
       - wordpress
     networks:
@@ -21,10 +20,9 @@ services:
   mariadb:
     container_name: mariadb
     build: requirements/mariadb 
-    # volumes:
-    #   - type: bind
-    #     source:  /home/agouet42/data/mariadb
-    #     target: /var/lib/mysql
+    volumes:
+      - Vmariadb:/var/lib/mysql
+      # - /home/agouet42/data/mariadb:/var/lib/mysql #attention pas d espaces, bind mount
     restart: unless-stopped
     expose:
       - "3306"
@@ -39,10 +37,8 @@ services:
       - mariadb
     env_file: .env
     volumes:
-      - /home/agouet42/data/wordpress:/var/www/wordpress
-    #   - type: bind
-    #     source:  /home/agouet42/data/wordpress
-    #     target: /var/www/wordpress
+      - Wordpress:/var/www/wordpress
+      # - /home/agouet42/data/wordpress:/var/www/wordpress #attention pas d espaces, bind mount
     networks:
       - inception
     restart: on-failure
@@ -53,3 +49,20 @@ services:
 networks:
   inception:
     driver: bridge
+
+
+volumes:
+  Wordpress:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: /home/agouet42/data/wordpress
+
+  Vmariadb:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: /home/agouet42/data/mariadb
+    
