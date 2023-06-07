@@ -13,7 +13,7 @@ RUN		chown -R root:root /var/www/wordpress
 #CLI
 RUN 	wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
 RUN 	chmod +x wp-cli.phar
-RUN		mv wp-cli.phar /usr/local/bin/wp
+RUN		mv wp-cli.phar /usr/local/bin/wp-cli.phar
 					
 #php
 RUN 	apt install -y php\

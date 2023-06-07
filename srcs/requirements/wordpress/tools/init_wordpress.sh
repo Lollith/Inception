@@ -5,15 +5,13 @@
 if [ ! -f /var/www/wordpress/wp-config.php ]; then
 sleep 10
 
-wp config create	--allow-root \
+wp-cli.phar config create	--allow-root \
 					--dbname=$MYSQL_DATABASE \
 					--dbuser=$MYSQL_USER \
 					--dbpass=$MYSQL_PASSWORD \
 					--dbhost=mariadb:3306 \
 					--path='/var/www/wordpress'
 
-# wp core install --allow-rrot \
-# 				--path='/var/www/wordpress'
 
 else
 	echo "wp_config php DONE"
