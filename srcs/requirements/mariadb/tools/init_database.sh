@@ -1,57 +1,33 @@
 #!/bin/bash
-
-#DEBUG 
-#set -x
+#.sh remplace mon .sql
 
 service mysql start
+#le service MySQL doit etre correctement démarré avant d'exécuter les commandes MySQL. sinon erreurs de mdp
+# while ( mysql --user=root --connect-timeout=1 -e "SELECT 1" &> /dev/null)
+# while ! service mysql status | grep "running"
+# while ! ps -ef | grep mysqld | grep -v grep > /dev/null
+# mysqld & while !(mysqladmin  ping  &> /dev/null)
 
-sleep 3 
-# Assurez-vous que le service MySQL est correctement démarré avant d'exécuter les commandes MySQL. Vous pouvez ajouter une pause ou une vérification pour vous assurer que le service est actif avant d'exécuter les commandes suivantes.
+# while [ ! -e /var/run/mysqld/mysqld.pid ]
+# while [[ -z $(mysqladmin -uroot status 2>/dev/null) ]]
+# do
+#     echo "Waiting for database..."
+#     sleep 1
+# done
+#     echo "Database is ready"
 
-mysql -e "CREATE DATABASE IF NOT EXISTS \`${MYSQL_DATABASE}\`;"
-mysql -e "CREATE USER IF NOT EXISTS \`${MYSQL_USER}\`@'localhost' IDENTIFIED BY '${MYSQL_PASSWORD}';"
-mysql -e "GRANT ALL PRIVILEGES ON \`${MYSQL_DATABASE}\`.* TO \`${MYSQL_USER}\`@'%' IDENTIFIED BY '${MYSQL_PASSWORD}';"
-# # mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '${MYSQL_ROOT_PASSWORD}';"
-# # mysql -e "FLUSH PRIVILEGES;"
+#DEBUG 
+set -x
 
-# mysqladmin -u root -p$MYSQL_ROOT_PASSWORD shutdown
-# exec mysqld_safe
+mysql -uroot -p$MYSQL_ROOT_PASSWORD -e "ALTER USER 'root'@'localhost IDENTIFIED BY '${MYSQL_ROOT_PASSWORD}';"
+mysql -uroot -p$MYSQL_ROOT_PASSWORD -e "CREATE USER IF NOT EXISTS \`${MYSQL_USER}\`@'localhost' IDENTIFIED BY '${MYSQL_PASSWORD}';"
+mysql -uroot -p$MYSQL_ROOT_PASSWORD -e "GRANT ALL PRIVILEGES ON *.* TO\`${MYSQL_USER}\`@'%' IDENTIFIED BY '${MYSQL_PASSWORD}';"
+mysql -uroot -p$MYSQL_ROOT_PASSWORD -e "CREATE DATABASE IF NOT EXISTS \`${MYSQL_DATABASE}\`;"
+mysql -uroot -p$MYSQL_ROOT_PASSWORD -e "FLUSH PRIVILEGES;"
+
+
+mysqladmin -uroot -p$MYSQL_ROOT_PASSWORD shutdown
 exec mysqld
 
 #debug
-# set +x
-
-# mysql  my_script.sql
-# service mysql status;
-
-
-
-
-
-
-# if [ ! -f "/var/lib/mysql/file_flag_mdb_done" ]; then
-
-# 	service mysql start
-
-# 	# Wait for service to be ready
-# 	echo -n "Waiting for service to be fully started"
-# 	sleep 3 # Sleep at least tree
-# 	while [ ! -e /var/run/mysqld/mysqld.sock ]; do 
-# 		echo -n .
-# 		sleep 1
-# 	done
-# 	echo ""
-	
-# 	mysql << EOF
-# CREATE DATABASE IF NOT EXISTS \`${MYSQL_DATABASE}\`;
-# CREATE USER IF NOT EXISTS \`${MYSQL_USER}\`@\`localhost\` IDENTIFIED BY '${MYSQL_PASSWORD}';
-# GRANT ALL PRIVILEGES ON \`${MYSQL_DATABASE}\`.* TO \`${MYSQL_USER}\`@'%' IDENTIFIED BY '${MYSQL_PASSWORD}';
-# ALTER USER 'root'@'localhost' IDENTIFIED BY '${MYSQL_ROOT_PASSWORD}';
-# FLUSH PRIVILEGES;
-# EOF
-# 	sleep 5
-# 	mysqladmin -uroot -p$MYSQL_ROOT_PASSWORD shutdown
-# 	touch /var/lib/mysql/file_flag_mdb_done
-# fi
-
-# exec mysqld
+set +x

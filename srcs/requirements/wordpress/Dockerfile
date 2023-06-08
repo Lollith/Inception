@@ -27,7 +27,7 @@ COPY	conf/www.conf /etc/php/7.3/fpm/pool.d/www.conf
 
 COPY  	tools/init_wordpress.sh init_wordpress.sh
 RUN 	chmod 755 init_wordpress.sh  
-ENTRYPOINT ["/init_wordpress.sh"]
+CMD ["/bin/bash", "/init_wordpress.sh"]
 
 # Create the folder to enable php start
 # RUN 	mkdir /run/php

@@ -14,7 +14,7 @@ build:
 		docker compose -f $(SRC_COMPOSE) build
 
 logs: 
-		docker-compose -f $(SRC_COMPOSE) logs -f --tail 5
+		docker-compose -f $(SRC_COMPOSE) logs -f --tail 20
 
 stop:
 		docker compose -f $(SRC_COMPOSE) stop
@@ -41,5 +41,7 @@ debug_nginx:
 
 debug_wordpress:
 				docker-compose -f $(SRC_COMPOSE) exec wordpress /bin/bash 
+debug_mariadb:
+				docker-compose -f $(SRC_COMPOSE) exec mariadb /bin/bash 
 
 .PHONY: all build up down run clean re stop restart
