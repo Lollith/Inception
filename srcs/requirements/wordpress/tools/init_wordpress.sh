@@ -4,7 +4,7 @@
 if [ ! -f /var/www/wordpress/wp-config.php ]; then
 	sleep 10
 
-	wp-cli.phar core download --allow-root 
+	wp-cli.phar core download --allow-root \ 
 					--path='/var/www/wordpress'
 							
 
@@ -26,9 +26,9 @@ if [ ! -f /var/www/wordpress/wp-config.php ]; then
 					--title=$WP_TITLE \
 					--admin_user=$WP_ADMIN \
 					--admin_password=$WP_ADMIN_PASSWORD \
-					# --admin_email=$WP_ADMIN_EMAIL \
-					--skip-email \
+					--admin_email=$WP_ADMIN_EMAIL \
 					--path='/var/www/wordpress'
+					# --skip-email \
 
 	#2eme utilisateur
 	wp-cli.phar user create --allow-root \
@@ -43,8 +43,8 @@ else
 fi
 
 if [ ! -d /run/php ]; then
-	mkdir -p /run/php #creer ds un path donner le dossier
+	mkdir -p /run/php
 fi
 
 # run php-fpm:
-exec php-fpm7.3 -F
+exec php-fpm7.3 -F -R

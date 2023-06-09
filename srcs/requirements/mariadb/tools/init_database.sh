@@ -6,11 +6,9 @@
 #DEBUG// a supprimer pour securiser - a utiliser avec service mysql start
 # set -x
 
-#setup launch mysqld
-mkdir -p /run/mysqld
-chown -R mysql:mysql /run/mysqld
 
-mysqld # et non service mysql start 
+mysqld & # et non: 
+# service mysql start
 
 mysql -uroot -p$MYSQL_ROOT_PASSWORD -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '${MYSQL_ROOT_PASSWORD}';"
 mysql -uroot -p$MYSQL_ROOT_PASSWORD -e "CREATE USER IF NOT EXISTS \`${MYSQL_USER}\`@'localhost' IDENTIFIED BY '${MYSQL_PASSWORD}';"
@@ -22,7 +20,10 @@ mysqladmin -uroot -p$MYSQL_ROOT_PASSWORD shutdown
 
 exec mysqld
 
-echo "Database ok"
 
 #debug
 # set +x
+
+# docker build srcs/requirements/mariadb/ -t maria
+#docker run -it --rm --env-file srcs/.env maria /bin/bash
+

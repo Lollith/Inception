@@ -1,15 +1,24 @@
 FROM 		debian:buster
 
 #general
-RUN			apt update && apt upgrade -y 
+RUN			apt-get update && apt upgrade -y 
 
 #mariadb
-RUN 		apt install mariadb-server -y
+RUN 		apt-get install -y mariadb-server -y && \
+            apt-get install -y mariadb-client
+
+# RUN chown -R mysql:mysql /var/lib/mysql
+
+#setup launch mysqld
+RUN         mkdir -p /run/mysqld
+RUN         chown -R mysql:mysql /run/mysqld
+
 COPY		conf/50-server.cnf /etc/mysql/mariadb.conf.d/50-server.cnf
 
 COPY		tools/init_database.sh init_database.sh 
 RUN 		chmod 755 init_database.sh
-# HEALTHCHECK --interval=15s --timeout=10s --start-period=20s --retries=3 CMD ["netstat", "-lnutp", "|", "grep", "3306"] || exit 1
+
 CMD 	["/bin/bash", "/init_database.sh"]
 
-# EXPOSE 3306 // mis ds compose // preferer ici?? 
+EXPOSE 3306 
+#debug
