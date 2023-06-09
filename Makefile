@@ -1,7 +1,7 @@
 SRC_COMPOSE = ./srcs/docker-compose.yml
 
 
-all: dirs build up
+all: dirs build up logs
 
 up : 
 	docker compose -f $(SRC_COMPOSE) up -d

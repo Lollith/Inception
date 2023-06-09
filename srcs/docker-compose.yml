@@ -29,12 +29,18 @@ services:
     networks:
      - inception
     env_file: .env
+    healthcheck:
+      test: ["CMD", "mysql", "-u", "${MYSQL_USER}", "-p${MYSQL_PASSWORD}" ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
 
   wordpress:
     container_name: wordpress
     build: requirements/wordpress
     depends_on:
-      - mariadb
+      mariadb:
+        condition: service_healthy #sans mariadb wordpress ne peut pas marcher
     env_file: .env
     volumes:
       - Wordpress:/var/www/wordpress
@@ -58,7 +64,6 @@ volumes:
       type: 'none'
       o: 'bind'
       device: /home/agouet42/data/wordpress
-
   Vmariadb:
     driver: local
     driver_opts:
