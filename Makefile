@@ -1,10 +1,10 @@
 SRC_COMPOSE = ./srcs/docker-compose.yml
 
 
-all: dirs build up #logs
+all: 	dirs build up #logs
 
 up : 
-	docker compose -f $(SRC_COMPOSE) up -d
+		docker compose -f $(SRC_COMPOSE) up -d
 
 dirs:
 		mkdir -p /home/agouet42/data/mariadb
@@ -37,7 +37,7 @@ re: clean
 	make all
 
 debug_nginx: 
-			docker-compose -f $(SRC_COMPOSE) exec nginx /bin/bash 
+				docker-compose -f $(SRC_COMPOSE) exec nginx /bin/bash 
 
 debug_wordpress:
 				docker-compose -f $(SRC_COMPOSE) exec wordpress /bin/bash 
