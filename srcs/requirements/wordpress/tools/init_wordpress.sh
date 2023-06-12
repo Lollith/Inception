@@ -17,8 +17,8 @@ if [ ! -f /var/www/wordpress/wp-config.php ]; then
 					--path='/var/www/wordpress'
 
 	sleep 10
-	# wp-cli.phar theme install atra --activate
-	# sleep 10
+	wp-cli.phar theme install atra --activate
+	sleep 10
 
 	#1er utilisateur 
 	wp-cli.phar core install --allow-root \
@@ -42,9 +42,10 @@ else
 	echo "wp_config php DONE"
 fi
 
+# Create the folder to enable php start
 if [ ! -d /run/php ]; then
 	mkdir -p /run/php
 fi
 
-# run php-fpm:
+#Launch PHP FPM in foreground and ignore deamonize from conf file (-F)
 exec php-fpm7.3 -F -R

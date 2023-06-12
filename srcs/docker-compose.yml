@@ -30,7 +30,7 @@ services:
      - inception
     env_file: .env
     healthcheck:
-      test: ["CMD", "mysql", "-u", "${MYSQL_USER}", "-p${MYSQL_PASSWORD}" ]
+      test: [ "CMD", "mysql", "-u", "${MYSQL_USER}", "-p${MYSQL_PASSWORD}" ]
       interval: 30s
       timeout: 5s
       retries: 3
