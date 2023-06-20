@@ -1,15 +1,12 @@
-#!/bin/bash
+#!/bin/sh
 
 # le service MySQL doit etre correctement démarré avant d'exécuter les commandes MySQL. 
 # sinon erreurs de mdp =>health sur dockercompose.yml + sleep
 # 1 seul daemon par .sh
 
 #DEBUG// a supprimer pour securiser 
-# set -x
+set -x
 
-#setup launch mysqld
-mkdir -p /var/run/mysqld
-chown -R mysql:mysql /var/run/mysqld
 
 
 #lance mysql pour le config
@@ -34,20 +31,20 @@ if [ $attempt -gt $max_attempts ]; then
     mysqladmin -uroot --skip-password shutdown
 else
     echo "Database is up and running."
+
+    mysql -uroot -p$MYSQL_ROOT_PASSWORD -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '${MYSQL_ROOT_PASSWORD}';"
+    mysql -uroot -p$MYSQL_ROOT_PASSWORD -e "CREATE USER IF NOT EXISTS \`${MYSQL_USER}\`@'localhost' IDENTIFIED BY '${MYSQL_PASSWORD}';"
+    mysql -uroot -p$MYSQL_ROOT_PASSWORD -e "GRANT ALL PRIVILEGES ON *.* TO\`${MYSQL_USER}\`@'%' IDENTIFIED BY '${MYSQL_PASSWORD}';"
+    mysql -uroot -p$MYSQL_ROOT_PASSWORD -e "CREATE DATABASE IF NOT EXISTS \`${MYSQL_DATABASE}\`;"
+    mysql -uroot -p$MYSQL_ROOT_PASSWORD -e "FLUSH PRIVILEGES;"
+
+    #ferme le processus enfant
+    mysqladmin -uroot -p$MYSQL_ROOT_PASSWORD shutdown
+
+    #exec remplace le pid1 du .sh , devient nouveau processus principal
+    exec mysqld
 fi
 
-mysql -uroot -p$MYSQL_ROOT_PASSWORD -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '${MYSQL_ROOT_PASSWORD}';"
-mysql -uroot -p$MYSQL_ROOT_PASSWORD -e "CREATE USER IF NOT EXISTS \`${MYSQL_USER}\`@'localhost' IDENTIFIED BY '${MYSQL_PASSWORD}';"
-mysql -uroot -p$MYSQL_ROOT_PASSWORD -e "GRANT ALL PRIVILEGES ON *.* TO\`${MYSQL_USER}\`@'%' IDENTIFIED BY '${MYSQL_PASSWORD}';"
-mysql -uroot -p$MYSQL_ROOT_PASSWORD -e "CREATE DATABASE IF NOT EXISTS \`${MYSQL_DATABASE}\`;"
-mysql -uroot -p$MYSQL_ROOT_PASSWORD -e "FLUSH PRIVILEGES;"
-
-#ferme le processus enfant
-mysqladmin -uroot -p$MYSQL_ROOT_PASSWORD shutdown
-
-#exec remplace le pid1 du .sh , devient nouveau processus principal
-exec mysqld
-
 #debug
-# set +x
+set +x
 
