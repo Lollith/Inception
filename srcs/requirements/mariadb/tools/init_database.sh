@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh  #alpine 
 
 # le service MySQL doit etre correctement démarré avant d'exécuter les commandes MySQL. 
 # sinon erreurs de mdp =>health sur dockercompose.yml + sleep
@@ -8,10 +8,10 @@
 set -x
 
 
-
 #lance mysql pour le config
 mysqld & #creer un background = process enfant
 
+# mysql_install_db --user=$MYSAL_USER 
 
 # limite maximale de tentatives
 max_attempts=10
