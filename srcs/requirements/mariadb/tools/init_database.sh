@@ -6,12 +6,12 @@
 
 #DEBUG// a supprimer pour securiser 
 set -x
+# /etc/init.d/mariadb setup
+
 
 
 #lance mysql pour le config
 mysqld & #creer un background = process enfant
-
-# mysql_install_db --user=$MYSAL_USER 
 
 # limite maximale de tentatives
 max_attempts=10
@@ -31,12 +31,17 @@ if [ $attempt -gt $max_attempts ]; then
     mysqladmin -uroot --skip-password shutdown
 else
     echo "Database is up and running."
+    #TODO
+    # mysql_secure_installation #alpine 
+    # echo -e "y\n $MYSQL_ROOT_PASSWORD \n $MYSQL_ROOT_PASSWORD \ny\ny\ny\ny" | mysql_secure_installation
+    # mysql -uroot -p$MYSQL_ROOT_PASSWORD -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '${MYSQL_ROOT_PASSWORD}';"
+    mysql -e "CREATE DATABASE IF NOT EXISTS \`${MYSQL_DATABASE}\`;"
+    mysql -e "CREATE USER IF NOT EXISTS \`${MYSQL_USER}\`@'localhost' IDENTIFIED BY '${MYSQL_PASSWORD}';"
+    mysql -e "GRANT ALL PRIVILEGES ON *.* TO\`${MYSQL_USER}\`@'%' IDENTIFIED BY '${MYSQL_PASSWORD}';"
+    mysql -e "FLUSH PRIVILEGES;"
 
-    mysql -uroot -p$MYSQL_ROOT_PASSWORD -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '${MYSQL_ROOT_PASSWORD}';"
-    mysql -uroot -p$MYSQL_ROOT_PASSWORD -e "CREATE USER IF NOT EXISTS \`${MYSQL_USER}\`@'localhost' IDENTIFIED BY '${MYSQL_PASSWORD}';"
-    mysql -uroot -p$MYSQL_ROOT_PASSWORD -e "GRANT ALL PRIVILEGES ON *.* TO\`${MYSQL_USER}\`@'%' IDENTIFIED BY '${MYSQL_PASSWORD}';"
-    mysql -uroot -p$MYSQL_ROOT_PASSWORD -e "CREATE DATABASE IF NOT EXISTS \`${MYSQL_DATABASE}\`;"
-    mysql -uroot -p$MYSQL_ROOT_PASSWORD -e "FLUSH PRIVILEGES;"
+    #TODO
+    mysql -e "SET PASSWORD FOR 'root'@'localhost' = PASSWORD('$MYSQL_ROOT_PASSWORD');"
 
     #ferme le processus enfant
     mysqladmin -uroot -p$MYSQL_ROOT_PASSWORD shutdown
@@ -44,7 +49,6 @@ else
     #exec remplace le pid1 du .sh , devient nouveau processus principal
     exec mysqld
 fi
-
 #debug
 set +x
 
