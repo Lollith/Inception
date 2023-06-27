@@ -10,7 +10,7 @@ if [ ! -f /var/www/wordpress/wp-config.php ]; then
 							
 
 	#configurtion  de wordpress a son lancement
-	wp config create	--allow-root \
+	wp-cli.phar config create	--allow-root \
 					--dbname=$MYSQL_DATABASE \
 					--dbuser=$MYSQL_USER \
 					--dbpass=$MYSQL_PASSWORD \
@@ -22,7 +22,7 @@ if [ ! -f /var/www/wordpress/wp-config.php ]; then
 	# sleep 10
 
 	#1er utilisateur 
-	wp core install --allow-root \
+	wp-cli.phar core install --allow-root \
 					--url=$DOMAIN_NAME \
 					--title=$WP_TITLE \
 					--admin_user=$WP_ADMIN \

@@ -23,7 +23,7 @@ RUN		chown -R root:root /var/www/wordpress
 RUN 	wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
 RUN 	chmod +x wp-cli.phar
 # RUN		mv wp-cli.phar /usr/local/bin/wp
-RUN		mv wp-cli.phar /usr/local/bin/wp
+RUN		mv wp-cli.phar /usr/local/bin/wp-cli.phar
 					
 #php
 COPY	conf/www.conf /etc/php81/php-fpm.d/www.conf
