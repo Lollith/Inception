@@ -46,9 +46,9 @@ services:
     container_name: wordpress
     build: requirements/wordpress
     depends_on:
-      - mariadb
-      # mariadb:
-        # condition: service_healthy #sans mariadb wordpress ne peut pas marcher
+      # - mariadb
+      mariadb:
+        condition: service_healthy #sans mariadb wordpress ne peut pas marcher
     env_file: .env
     volumes:
       - Wordpress:/var/www/wordpress

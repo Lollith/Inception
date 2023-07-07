@@ -8,8 +8,8 @@ RUN		apk update && apk upgrade && apk add --no-cache \
 		mariadb-client \
 		php81 php81-fpm \
 		php81-mysqli \
-		php81-common php81-phar php81-mbstring
-		# apk add php81-cli php8-phar php81-iconv &&\
+		php81-common php81-phar php81-mbstring 
+RUN		apk add php81-cli php81-iconv 
 		#needed for wp-cli
 
 #DEBUG_listen
@@ -26,20 +26,21 @@ RUN		mv -f wp-cli.phar /usr/local/bin/wp-cli.phar
 COPY	conf/www.conf /etc/php81/php-fpm.d/www.conf
 
 #wordpress
-RUN 	wget https://fr.wordpress.org/wordpress-6.2-fr_FR.tar.gz -P /var/www
-RUN 	cd /var/www && tar -xzf wordpress-6.2-fr_FR.tar.gz && rm wordpress-6.2-fr_FR.tar.gz
-RUN		chmod +x /var/www
-# RUN		chmod +x /var/www/wordpress && \
+# RUN 	wget https://fr.wordpress.org/wordpress-6.2-fr_FR.tar.gz -P /var/www
+# RUN 	cd /var/www && tar -xzf wordpress-6.2-fr_FR.tar.gz && rm wordpress-6.2-fr_FR.tar.gz
+# RUN		chmod +x /var/www
+RUN  mkdir -p /var/www/wordpress
+RUN  adduser -u 82 -D -S -G www-data www-data
+RUN		chmod +x -R /var/www/wordpress
 # RUN 	mkdir -p /var/www/html  && \ 
-		# adduser -u 82 -D -S -G www-data www-data
 # RUN 	chmod 777 -R /var/www/html
 # RUN		chown -R www-data:www-data /var/www/html
-# RUN		chown -R www-data:www-data /var/www/wordpress
-RUN		chown -R root:root /var/www/wordpress
+RUN		chown -R www-data:www-data /var/www/wordpress
+# RUN		chown -R root:root /var/www/wordpress
 
 
 					
-# EXPOSE 9000
+EXPOSE 9000
 
 COPY  	tools/init_wordpress.sh init_wordpress.sh
 RUN 	chmod 755 init_wordpress.sh  
