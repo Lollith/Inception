@@ -15,4 +15,4 @@ RUN         chown -R mysql:mysql /var/lib/mysql && \
 ENTRYPOINT 	["sh","init_database.sh"]
 
 #debug
-# EXPOSE 3306 
+EXPOSE 3306 

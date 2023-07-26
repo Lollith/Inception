@@ -21,6 +21,9 @@ RUN 	chmod +x wp-cli.phar
 # RUN		mv -f wp-cli.phar /usr/local/bin/wp
 RUN		mv -f wp-cli.phar /usr/local/bin/wp-cli.phar
 
+ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.9.0/wait   /wait
+RUN chmod +x /wait
+
 #php
 # RUN 	rm -f /etc/php81/php-fpm.d/www.conf
 COPY	conf/www.conf /etc/php81/php-fpm.d/www.conf
@@ -28,15 +31,13 @@ COPY	conf/www.conf /etc/php81/php-fpm.d/www.conf
 #wordpress
 # RUN 	wget https://fr.wordpress.org/wordpress-6.2-fr_FR.tar.gz -P /var/www
 # RUN 	cd /var/www && tar -xzf wordpress-6.2-fr_FR.tar.gz && rm wordpress-6.2-fr_FR.tar.gz
-# RUN		chmod +x /var/www
+
 RUN  mkdir -p /var/www/wordpress
 RUN  adduser -u 82 -D -S -G www-data www-data
 RUN		chmod +x -R /var/www/wordpress
-# RUN 	mkdir -p /var/www/html  && \ 
-# RUN 	chmod 777 -R /var/www/html
-# RUN		chown -R www-data:www-data /var/www/html
+
 RUN		chown -R www-data:www-data /var/www/wordpress
-# RUN		chown -R root:root /var/www/wordpress
+RUN		chown -R root:root /var/www/wordpress
 
 
 					
