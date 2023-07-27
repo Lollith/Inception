@@ -15,4 +15,4 @@ RUN 		chmod 755 init_database.sh
 ENTRYPOINT 	["bash", "/init_database.sh"]
 
 #debug
-# EXPOSE 3306 
+EXPOSE 3306 
