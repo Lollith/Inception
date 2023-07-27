@@ -20,7 +20,7 @@ if [ ! -f /var/www/wordpress/wp-config.php ]; then
 					--path=/var/www/wordpress
 
 	#2eme utilisateur
-	wp user create --allow-root \
+	wp-cli.phar user create --allow-root \
 					"$WP_USER" \
 					"$WP_USER_EMAIL" \
 					--role=author \

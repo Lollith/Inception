@@ -24,7 +24,7 @@ restart:
 
 
 #detruit la stack
-down:
+down: stop
 		docker compose -f $(SRC_COMPOSE) down
 
 #img, volumes, dossier du home
