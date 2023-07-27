@@ -1,14 +1,8 @@
 FROM 	alpine:3.17.1
 
-
 #general
 RUN	apk update --no-cache && \
         apk add --no-cache nginx openssl
-
-#DEBUG
-#RUN   apt install vim -y
-#RUN   apt install curl -y 
-#RUN   apt-get install -y net-tools
 
 #securite		
 RUN 	mkdir -p /etc/nginx/ssl && \
@@ -25,5 +19,8 @@ COPY	conf/nginx.conf /etc/nginx/nginx.conf
 #1er plan pour que le conteneur ne s'arrete pas
 CMD ["nginx", "-g", "daemon off;" ]
 
-
+#DEBUG
+#RUN   apt install vim -y
+#RUN   apt install curl -y 
+#RUN   apt-get install -y net-tools
 

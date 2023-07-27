@@ -7,7 +7,7 @@
 #DEBUG//  
 # set -x
 
-if [ ! -d "/var/lib/mysql/$MYSQL_DATABASE" ]; then
+if [ ! -f "Flag_mbd" ]; then
     #setup launch mysqld
     mkdir -p /var/run/mysqld
     chown -R mysql:mysql /var/run/mysqld
@@ -44,6 +44,11 @@ if [ ! -d "/var/lib/mysql/$MYSQL_DATABASE" ]; then
 
     #ferme le processus enfant
     mysqladmin -uroot -p$MYSQL_ROOT_PASSWORD shutdown
+    touch Flag_mbd
+
+else
+    echo "Database already created"
+
 
 fi
 #exec remplace le pid1 du .sh , devient nouveau processus principal
