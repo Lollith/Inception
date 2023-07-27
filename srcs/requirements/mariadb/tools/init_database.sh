@@ -15,6 +15,7 @@ if [ ! -d "/var/lib/mysql/$MYSQL_DATABASE" ]; then
 		--auth-root-authentication-method=normal
 	mkdir -p /run/mysqld
 	chown -R mysql:mysql /run/mysqld
+	# chown -R root:root /run/mysqld
 
     #lance mysql pour le config
     mysqld -uroot & #creer un background = process enfant
