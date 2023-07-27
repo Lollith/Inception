@@ -10,9 +10,6 @@ services:
       - "443:443" 
     volumes:
         - Wordpress:/var/www/wordpress
-      # - /home/agouet42/data/wordpress:/var/www/wordpress
-      
-       #attention pas d espaces, bind mount
     depends_on:
       - wordpress
     networks:
@@ -24,8 +21,6 @@ services:
     build: requirements/mariadb 
     volumes:
       - Vmariadb:/var/lib/mysql
-      # - /home/agouet42/data/mariadb:/var/lib/mysql
-       #attention pas d espaces, bind mount
     restart: unless-stopped
     expose:
       - "3306"
@@ -43,11 +38,10 @@ services:
     build: requirements/wordpress
     depends_on:
       mariadb:
-        condition: service_healthy #sans mariadb wordpress ne peut pas marcher
+        condition: service_healthy
     env_file: .env
     volumes:
       - Wordpress:/var/www/wordpress
-      # - /home/agouet42/data/wordpress:/var/www/wordpress #attention pas d espaces, bind mount
     networks:
       - inception
     restart: on-failure

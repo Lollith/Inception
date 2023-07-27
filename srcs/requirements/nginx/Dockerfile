@@ -2,9 +2,8 @@ FROM 	alpine:3.17.1
 
 
 #general
-RUN		apk update --no-cache && \
-                apk add --no-cache nginx openssl
-                #je ne veu pas upgrade a la version du dessus, sujet
+RUN	apk update --no-cache && \
+        apk add --no-cache nginx openssl
 
 #DEBUG
 #RUN   apt install vim -y
