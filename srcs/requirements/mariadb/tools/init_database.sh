@@ -1,55 +1,54 @@
-#!/bin/sh  #alpine 
+
+
+#!/bin/bash
 
 # le service MySQL doit etre correctement démarré avant d'exécuter les commandes MySQL. 
 # sinon erreurs de mdp =>health sur dockercompose.yml + sleep
 # 1 seul daemon par .sh
 
-#DEBUG
-set -x
+#DEBUG// a supprimer pour securiser 
+# set -x
 
-if [ ! -d "/var/lib/mysql/$MYSQL_DATABASE" ]; then
-    #initialise le repertoire de donnee +creer les  tables system #alpine
-	mariadb-install-db \
-		--user=mysql \
-		--datadir=/var/lib/mysql \
-		--auth-root-authentication-method=normal
-	mkdir -p /run/mysqld
-	chown -R mysql:mysql /run/mysqld
+#setup launch mysqld
+mkdir -p /var/run/mysqld
+chown -R mysql:mysql /var/run/mysqld
 
-    #lance mysql pour le config
-    mysqld -uroot & #creer un background = process enfant
 
-    # limite maximale de tentatives
-    max_attempts=10
-    # compteur
-    attempt=1
-    #attend q mysql soit lance sinon erreur socket
-    while !(mysqladmin -uroot --skip-password ping > /dev/null) && [ $attempt -le $max_attempts ]
-    do
-        echo "Waiting for database..."
-        sleep 3
-        attempt=$((attempt + 1))
-    done
+#lance mysql pour le config
+mysqld & #creer un background = process enfant
 
-    if [ $attempt -gt $max_attempts ]; then
-        echo "Failed to start MySQL. Exiting..."
-        #ferme le processus enfant
-        mysqladmin -uroot --skip-password shutdown
-    else
-        echo "Database is up and running."
 
-    fi
-        mysql -e "CREATE DATABASE IF NOT EXISTS $MYSQL_DATABASE;"
-        mysql -e "CREATE USER '$MYSQL_USER'@'%' IDENTIFIED BY '$MYSQL_PASSWORD';"
-        mysql -e "GRANT ALL PRIVILEGES ON $MYSQL_DATABASE.* TO '$MYSQL_USER'@'%' IDENTIFIED BY '$MYSQL_PASSWORD';"
-        mysql -e "FLUSH PRIVILEGES;"
-        mysql -e "SET PASSWORD FOR 'root'@'localhost' = PASSWORD('$MYSQL_ROOT_PASSWORD');"
+# limite maximale de tentatives
+max_attempts=10
+# compteur
+attempt=1
+#attend q mysql soit lance sinon erreur socket
+while !(mysqladmin ping > /dev/null) && [ $attempt -le $max_attempts ]
+do
+    echo "Waiting for database..."
+    sleep 3
+    attempt=$((attempt + 1))
+done
 
-        #ferme le processus enfant
-        mysqladmin -uroot -p$MYSQL_ROOT_PASSWORD shutdown
+if [ $attempt -gt $max_attempts ]; then
+    echo "Failed to start MySQL. Exiting..."
+    #ferme le processus enfant
+    mysqladmin -uroot --skip-password shutdown
+else
+    echo "Database is up and running."
 fi
-    #exec remplace le pid1 du .sh , devient nouveau processus principal
-    exec mysqld --user=root
-#debug
-set +x
 
+mysql -uroot -p$MYSQL_ROOT_PASSWORD -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '${MYSQL_ROOT_PASSWORD}';"
+mysql -uroot -p$MYSQL_ROOT_PASSWORD -e "CREATE USER IF NOT EXISTS \`${MYSQL_USER}\`@'localhost' IDENTIFIED BY '${MYSQL_PASSWORD}';"
+mysql -uroot -p$MYSQL_ROOT_PASSWORD -e "GRANT ALL PRIVILEGES ON *.* TO\`${MYSQL_USER}\`@'%' IDENTIFIED BY '${MYSQL_PASSWORD}';"
+mysql -uroot -p$MYSQL_ROOT_PASSWORD -e "CREATE DATABASE IF NOT EXISTS \`${MYSQL_DATABASE}\`;"
+mysql -uroot -p$MYSQL_ROOT_PASSWORD -e "FLUSH PRIVILEGES;"
+
+#ferme le processus enfant
+mysqladmin -uroot -p$MYSQL_ROOT_PASSWORD shutdown
+
+#exec remplace le pid1 du .sh , devient nouveau processus principal
+exec mysqld
+
+#debug
+# set +x
